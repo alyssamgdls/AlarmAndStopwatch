@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">AlarmAndStopwatch</string>
+    <string name="clock_text">Schedule an alarm</string>
+    <string name="stop_text">Stop alarm</string>
+    <string name="set_text">Set alarm</string>
+    <string name="did_you_set_the_alarm">Did you set the alarm?</string>
+    <string name="stopwatch">Stopwatch</string>
+    <string name="hour">00</string>
+    <string name="colon">:</string>
+    <string name="minute">00</string>
+    <string name="seconds">00</string>
+    <string name="h">H</string>
+    <string name="m">M</string>
+    <string name="s">S</string>
+    <string name="milliseconds">0</string>
+    <string name="todo">TODO</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
