@@ -21,9 +21,8 @@
             android:layout_centerVertical="true"
             android:layout_marginVertical="20dp"
             android:text="@string/stopwatch_time"
-            android:textAlignment="center"
-            android:textColor="@android:color/background_light"
-            android:textSize="50sp"
+            android:textColor="#81d4fa"
+            android:textSize="50dp"
             android:textStyle="bold" />
 
         <LinearLayout
@@ -38,12 +37,17 @@
                 android:id="@+id/start_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:text="@string/start" />
 
             <Button
                 android:id="@+id/pause_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/btn_start"
+                android:layout_alignBottom="@+id/btn_start"
+                android:layout_centerHorizontal="true"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:text="@string/pause" />
@@ -52,6 +56,9 @@
                 android:id="@+id/reset_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/btn_pause"
                 android:text="@string/reset" />
         </LinearLayout>
 

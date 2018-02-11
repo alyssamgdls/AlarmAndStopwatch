@@ -3,102 +3,121 @@ package com.magdales.alarmandstopwatch
 import android.annotation.SuppressLint
 import android.support.v4.app.Fragment
 import android.os.Bundle
+import android.widget.ArrayAdapter
 import android.os.Handler
 import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.TextView
+import android.widget.*
+import java.util.*
 
 /**
  * Created by Lai on 2/11/2018.
  */
 class StopwatchFragment : Fragment() {
 
-    var handler: Handler? = null
-    var hour: TextView? = null
-    var minute: TextView? = null
-    var seconds: TextView? = null
-    var milli_seconds: TextView? = null
+    internal lateinit var textView: TextView
 
-    var MillisecondTime: Long = 0
-    var StartTime: Long = 0
-    var TimeBuff: Long = 0
-    var UpdateTime = 0L
+    internal lateinit var startButton: Button
+    internal lateinit var pauseButton: Button
+    internal lateinit var resetButton: Button
+    internal lateinit var saveLapButton: Button
 
-    var Seconds: Int = 0
-    var Minutes: Int = 0
-    var MilliSeconds: Int = 0
+    internal var MillisecondTime: Long = 0
+    internal var StartTime: Long = 0
+    internal var TimeBuff: Long = 0
+    internal var UpdateTime = 0L
 
-    var flag: Boolean = false
+    internal var Seconds: Int = 0
+    internal var Minutes: Int = 0
+    internal var MilliSeconds: Int = 0
 
-    var startButton: ImageButton? = null
+    internal lateinit var listView: ListView
+    internal lateinit var handler: Handler
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val view: View = inflater!!.inflate(R.layout.stopwatch_fragment, container, false)
-
-        startButton = activity.findViewById(R.id.startButton)
-        hour = activity.findViewById(R.id.hour)
-        minute = activity.findViewById(R.id.minute)
-        seconds = activity.findViewById(R.id.seconds)
-        milli_seconds = activity.findViewById(R.id.milli_second)
-
-        startButton?.setOnClickListener {
-            if(flag){
-                handler?.removeCallbacks(runnable)
-                startButton?.setImageResource(R.drawable.ic_play)
-                flag=false
-            } else {
-                startButton?.setImageResource(R.drawable.pause)
-                StartTime = SystemClock.uptimeMillis()
-                handler?.postDelayed(runnable, 0)
-                flag = true
-            }
-        }
-
-        handler = Handler()
-
-
-        return view
-    }
+    internal var ListElements = arrayOf<String>()
+    internal lateinit var ListElementsArrayList: MutableList<String>
+    internal lateinit var adapter: ArrayAdapter<String>
 
     var runnable: Runnable = object : Runnable {
 
         override fun run() {
-
             MillisecondTime = SystemClock.uptimeMillis() - StartTime
-
             UpdateTime = TimeBuff + MillisecondTime
-
             Seconds = (UpdateTime / 1000).toInt()
-
             Minutes = Seconds / 60
-
             Seconds = Seconds % 60
 
             MilliSeconds = (UpdateTime % 1000).toInt()
+            MilliSeconds = MilliSeconds / 10
 
+            textView.text = ("" + java.lang.String.format("%02d", Minutes) + ":"
+                    + java.lang.String.format("%02d", Seconds) + "."
+                    + MilliSeconds)
 
-            if (Minutes.toString().length < 2) {
-                minute?.text = "0" + Minutes.toString()
-            } else {
-                minute?.text = Minutes.toString()
-            }
-            if (Seconds.toString().length < 2) {
-                seconds?.text = "0" + Seconds.toString()
-            } else {
-                seconds?.text = Seconds.toString()
-            }
-
-            milli_seconds?.text = MilliSeconds.toString()
-
-            handler?.postDelayed(this, 0)
+            handler.postDelayed(this, 0)
         }
 
+    }
+
+    @SuppressLint("SetTextI18n")
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        val view: View = inflater!!.inflate(R.layout.stopwatch_fragment, container, false)
+
+        textView = view.findViewById(R.id.stopwatch) as TextView
+        startButton = view.findViewById(R.id.start_button) as Button
+        pauseButton = view.findViewById(R.id.pause_button) as Button
+        resetButton = view.findViewById(R.id.reset_button) as Button
+        saveLapButton = view.findViewById(R.id.saveLap_button) as Button
+        listView = view.findViewById(R.id.listview) as ListView
+
+        handler = Handler()
+
+        ListElementsArrayList = ArrayList(Arrays.asList(*ListElements))
+        adapter = ArrayAdapter(activity,
+                android.R.layout.simple_list_item_1,
+                ListElementsArrayList
+        )
+        listView.adapter = adapter
+
+        startButton.setOnClickListener {
+            StartTime = SystemClock.uptimeMillis()
+            handler.postDelayed(runnable, 0)
+
+            resetButton.isEnabled = false
+        }
+
+        pauseButton.setOnClickListener {
+            TimeBuff += MillisecondTime
+
+            handler.removeCallbacks(runnable)
+
+            resetButton.isEnabled = true
+        }
+
+        resetButton.setOnClickListener {
+            MillisecondTime = 0L
+            StartTime = 0L
+            TimeBuff = 0L
+            UpdateTime = 0L
+            Seconds = 0
+            Minutes = 0
+            MilliSeconds = 0
+
+            textView.text = "00:00.00"
+
+            ListElementsArrayList.clear()
+
+            adapter.notifyDataSetChanged()
+        }
+
+        saveLapButton.setOnClickListener {
+            ListElementsArrayList.add(textView.text.toString())
+
+            adapter.notifyDataSetChanged()
+        }
+
+        return view
     }
 }
